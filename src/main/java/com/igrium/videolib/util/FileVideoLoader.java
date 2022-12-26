@@ -51,7 +51,7 @@ public class FileVideoLoader<T extends VideoHandle> implements IdentifiableResou
             Profiler applyProfiler,
             Executor prepareExecutor, Executor applyExecutor) {
         Collection<Identifier> ids = manager.findResources("videos",
-                filename -> extensionFilter.test(FilenameUtils.getExtension(filename)));
+                filename -> extensionFilter.test(FilenameUtils.getExtension(filename.toString()))).keySet();
 
         Map<Identifier, T> files = new ConcurrentHashMap<>();
         List<CompletableFuture<Void>> futures = new ArrayList<>();
@@ -79,7 +79,7 @@ public class FileVideoLoader<T extends VideoHandle> implements IdentifiableResou
         String ext = FilenameUtils.getExtension(id.getPath());
         File file = File.createTempFile("video_", "."+ext);
 
-        InputStream inputStream = manager.getResource(id).getInputStream();
+        InputStream inputStream = manager.getResource(id).get().getInputStream();
         OutputStream outputStream = new FileOutputStream(file);
 
         inputStream.transferTo(outputStream);

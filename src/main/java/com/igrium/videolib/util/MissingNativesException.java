@@ -1,6 +1,5 @@
 package com.igrium.videolib.util;
 
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
 /**
@@ -26,7 +25,7 @@ public class MissingNativesException extends Exception {
 
     public MissingNativesException(String message) {
         super(message);
-        errorText = new LiteralText(message);
+        errorText = Text.literal(message);
     }
 
     public MissingNativesException(Throwable cause) {
@@ -35,11 +34,11 @@ public class MissingNativesException extends Exception {
 
     public MissingNativesException(String message, Throwable cause) {
         super(message, cause);
-        errorText = new LiteralText(message);
+        errorText = Text.literal(message);
     }
 
     public MissingNativesException(Text errorText) {
-        super(errorText.asString());
+        super(errorText.getContent().toString());
         this.errorText = errorText;
     }
 
@@ -49,7 +48,7 @@ public class MissingNativesException extends Exception {
     }
 
     public MissingNativesException(Text errorText, Throwable cause) {
-        super(errorText.asString(), cause);
+        super(errorText.getContent().toString(), cause);
         this.errorText = errorText;
     }
     
@@ -58,7 +57,7 @@ public class MissingNativesException extends Exception {
     }
 
     public MissingNativesException(Text errorText, HelpButton[] helpButtons) {
-        super(errorText.asString());
+        super(errorText.getContent().toString());
         this.helpButtons = helpButtons;
     }
     

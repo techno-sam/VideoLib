@@ -1,12 +1,12 @@
 package com.igrium.videolib.server;
 
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import org.apache.logging.log4j.LogManager;
 
 import com.igrium.videolib.server.VideoLibNetworking.InstallStatus;
 import com.igrium.videolib.server.VideoLibNetworking.PlaybackCommand;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.PacketByteBuf;

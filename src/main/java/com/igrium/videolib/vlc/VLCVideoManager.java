@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Nullable;
-
 import com.google.common.collect.ImmutableSet;
 import com.igrium.videolib.api.VideoHandle;
 import com.igrium.videolib.api.VideoHandleFactory;
@@ -16,6 +14,7 @@ import com.igrium.videolib.util.FileVideoLoader;
 import com.igrium.videolib.util.MissingNativesException;
 
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
 import uk.co.caprica.vlcj.factory.NativeLibraryMappingException;
 import uk.co.caprica.vlcj.factory.discovery.NativeDiscovery;

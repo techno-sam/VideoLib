@@ -14,7 +14,7 @@ import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.Matrix4f;
 
@@ -40,7 +40,7 @@ public class VideoScreen extends Screen {
      * @param player Video player to use.
      */
     public VideoScreen(VideoPlayer player) {
-        super(new LiteralText("Video Player"));
+        super(Text.literal("Video Player"));
         this.player = player;
         player.getEvents().onceFinished(e -> {
             isStopping = true;
@@ -134,8 +134,7 @@ public class VideoScreen extends Screen {
         buffer.vertex(matrix, quad.x1(), quad.y0(), 0).texture(quad.u1(), quad.v0()).next();
         buffer.vertex(matrix, quad.x0(), quad.y0(), 0).texture(quad.u0(), quad.v0()).next();
 
-        buffer.end();
-        BufferRenderer.draw(buffer);
+        BufferRenderer.drawWithShader(buffer.end());
     }
 
     /**

@@ -4,27 +4,29 @@ import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Optional;
 
 import com.igrium.videolib.server.VideoLibNetworking.InstallStatus;
 import com.igrium.videolib.server.VideoLibNetworking.PlaybackCommand;
-import com.igrium.videolib.util.UriArgumentType;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.command.argument.IdentifierArgumentType;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
@@ -41,7 +43,7 @@ public final class VideoLibCommand  {
         }
     }
 
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated) {
+    public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
         LiteralCommandNode<ServerCommandSource> root = literal("videolib")
                 .requires(source -> source.hasPermissionLevel(2)).build();
         
@@ -52,12 +54,12 @@ public final class VideoLibCommand  {
         root.addChild(status);
 
         LiteralCommandNode<ServerCommandSource> play = literal("play").then(
-                argument("url", UriArgumentType.uri()).then(
+                argument("url", StringArgumentType.string()).then(
                     argument("targets", EntityArgumentType.players()).executes(context -> {
                         URL url;
                         try {
-                            url = UriArgumentType.getUri(context, "url").toURL();
-                        } catch (MalformedURLException e) {
+                            url = new URI(StringArgumentType.getString(context, "url")).toURL();
+                        } catch (MalformedURLException | URISyntaxException e) {
                             throw new SimpleCommandExceptionType(Text.of(e.getMessage())).create();
                         }
                         Collection<ServerPlayerEntity> players = EntityArgumentType.getPlayers(context, "targets");
@@ -105,19 +107,19 @@ public final class VideoLibCommand  {
         InstallStatus status = VideoLibServer.getInstallStatus(player);
         
         if (status == InstallStatus.NOT_INSTALLED) {
-            source.sendFeedback(new TranslatableText("commands.videolib.status.not_installed", player.getDisplayName())
+            source.sendFeedback(Text.translatable("commands.videolib.status.not_installed", player.getDisplayName())
                     .formatted(Formatting.RED), false);
             return 0;
         } else if (status == InstallStatus.MISSING_NATIVES) {
-            source.sendFeedback(new TranslatableText("commands.videolib.status.missing_natives", player.getDisplayName())
+            source.sendFeedback(Text.translatable("commands.videolib.status.missing_natives", player.getDisplayName())
                     .formatted(Formatting.YELLOW), false);
             return 1;
         } else if (status == InstallStatus.INSTALLED) {
-            source.sendFeedback(new TranslatableText("commands.videolib.status.installed", player.getDisplayName())
+            source.sendFeedback(Text.translatable("commands.videolib.status.installed", player.getDisplayName())
                     .formatted(Formatting.GREEN), false);
             return 2;
         } else {
-            throw new SimpleCommandExceptionType(new LiteralText("Unknown status type: "+status)).create();
+            throw new SimpleCommandExceptionType(Text.literal("Unknown status type: "+status)).create();
         }
     }
 
@@ -144,18 +146,18 @@ public final class VideoLibCommand  {
             success++;
         }
 
-        MutableText response = new LiteralText("");
+        MutableText response = Text.literal("");
         if (success > 0) {
-            response.append(new TranslatableText("commands.videolib.send_command.success", success));
+            response.append(Text.translatable("commands.videolib.send_command.success", success));
             if (fail > 0) response.append(" ");
         }
         if (fail == 1) {
             response.append(
-                    new TranslatableText("commands.videolib.send_command.fail_single", lastFail.getDisplayName())
+                    Text.translatable("commands.videolib.send_command.fail_single", lastFail.getDisplayName())
                             .formatted(Formatting.RED));
         } else if (fail > 0) {
             response.append(
-                    new TranslatableText("commands.videolib.send_command.fail", fail).formatted(Formatting.RED));
+                    Text.translatable("commands.videolib.send_command.fail", fail).formatted(Formatting.RED));
         }
 
         source.sendFeedback(response, true);

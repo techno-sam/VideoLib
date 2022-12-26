@@ -3,6 +3,7 @@ package com.igrium.videolib;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.apache.logging.log4j.LogManager;
@@ -107,7 +108,16 @@ public final class VideoLib implements ClientModInitializer {
      */
     public void onInitializeClient() {
         instance = this;
-        readConfig();
+        if (CONFIG_FILE.toFile().exists())
+            readConfig();
+        else {
+            try {
+                Files.createFile(CONFIG_FILE);
+                Files.write(CONFIG_FILE, VideoLibConfig.toJson(config).getBytes());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
         AfterInitCallback.EVENT.register(client -> initVideoManager());
 

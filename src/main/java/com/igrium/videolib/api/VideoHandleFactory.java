@@ -3,9 +3,8 @@ package com.igrium.videolib.api;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Creates or loads video handles that are compatible with a given video manager.
