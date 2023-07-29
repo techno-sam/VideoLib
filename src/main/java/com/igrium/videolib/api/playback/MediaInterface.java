@@ -34,7 +34,7 @@ public interface MediaInterface {
      * 
      * @param handle Video handle.
      * @return Success.
-     * @throws IllegalArgumentException If this this video player is incompatible
+     * @throws IllegalArgumentException If this video player is incompatible
      *                                  with this handle. Use
      *                                  <code>getHandle()</code> to get a handle
      *                                  guarenteed to work with this player.

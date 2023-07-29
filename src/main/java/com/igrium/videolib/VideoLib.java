@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import net.minecraft.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,7 +38,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 /**
  * The main class for VideoLib.
@@ -46,11 +46,11 @@ import net.minecraft.util.registry.Registry;
 public final class VideoLib implements ClientModInitializer {
     public static final Registry<VideoManagerFactory> VIDEO_MANAGERS = FabricRegistryBuilder
             .createSimple(VideoManagerFactory.class, new Identifier("videolib", "managers")).buildAndRegister();
-    private static Path CONFIG_FILE = FabricLoader.getInstance().getConfigDir().resolve("videolib.json");
+    private static final Path CONFIG_FILE = FabricLoader.getInstance().getConfigDir().resolve("videolib.json");
 
     private static VideoLib instance;
-    private static Logger LOGGER = LogManager.getLogger();
-    private MinecraftClient client = MinecraftClient.getInstance();
+    private static final Logger LOGGER = LogManager.getLogger();
+    private final MinecraftClient client = MinecraftClient.getInstance();
     
     /**
      * Get the current VideoLib instance.
