@@ -6,5 +6,11 @@
     "commands.videolib.send_command.fail_all": "Sent playback command to %d players.",
     "commands.videolib.send_command.fail": "%d players are unable to play videos.",
     "commands.videolib.send_command.fail_single": "%s is unable to play videos.",
-    "commands.videolib.arguments.invalid_uri": "Invalid URI"
+    "commands.videolib.arguments.invalid_uri": "Invalid URI",
+    "videolib.missing_natives.toast.title": "Native Libraries missing",
+    "videolib.missing_natives.toast.description": "VLC needs to be installed for video support to work.\nSee github.com/Motschen/VideoLib/wiki",
+    "videolib.midnightconfig.title": "VideoLib Config",
+    "videolib.midnightconfig.implementation": "Video Player Implementation",
+    "videolib.midnightconfig.enum.Implementation.VLC": "VLC Media Player",
+    "videolib.midnightconfig.showMissingNativesToast": "Show missing natives warning"
 }

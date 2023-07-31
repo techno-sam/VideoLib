@@ -1,12 +1,8 @@
 package com.igrium.videolib;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.SimpleRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,7 +29,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.resource.ResourceType;
@@ -44,13 +39,15 @@ import net.minecraft.util.Identifier;
  */
 @Environment(EnvType.CLIENT)
 public final class VideoLib implements ClientModInitializer {
-    public static final Registry<VideoManagerFactory> VIDEO_MANAGERS = FabricRegistryBuilder
-            .createSimple(VideoManagerFactory.class, new Identifier("videolib", "managers")).buildAndRegister();
-    private static final Path CONFIG_FILE = FabricLoader.getInstance().getConfigDir().resolve("videolib.json");
+    public static final Registry<VideoManagerFactory> VIDEO_MANAGERS =createSimple(new Identifier("videolib", "managers")).buildAndRegister();
 
     private static VideoLib instance;
     private static final Logger LOGGER = LogManager.getLogger();
     private final MinecraftClient client = MinecraftClient.getInstance();
+    public boolean missingNativesWarningShown = false;
+    public static FabricRegistryBuilder<VideoManagerFactory, SimpleRegistry<VideoManagerFactory>> createSimple(Identifier registryId) {
+        return FabricRegistryBuilder.createSimple(RegistryKey.ofRegistry(registryId));
+    }
     
     /**
      * Get the current VideoLib instance.
@@ -58,16 +55,6 @@ public final class VideoLib implements ClientModInitializer {
      */
     public static VideoLib getInstance() {
         return instance;
-    }
-
-    private VideoLibConfig config = new VideoLibConfig();
-
-    /**
-     * Get the VideoLib configuration data. Rarely useful except internally.
-     * @return VideoLib config.
-     */
-    public VideoLibConfig getConfig() {
-        return config;
     }
 
     private VideoManager videoManager;
@@ -108,16 +95,7 @@ public final class VideoLib implements ClientModInitializer {
      */
     public void onInitializeClient() {
         instance = this;
-        if (CONFIG_FILE.toFile().exists())
-            readConfig();
-        else {
-            try {
-                Files.createFile(CONFIG_FILE);
-                Files.write(CONFIG_FILE, VideoLibConfig.toJson(config).getBytes());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        VideoLibConfig.init("videolib", VideoLibConfig.class);
 
         AfterInitCallback.EVENT.register(client -> initVideoManager());
 
@@ -136,7 +114,6 @@ public final class VideoLib implements ClientModInitializer {
 
         // Default video manager.
         Registry.register(VIDEO_MANAGERS, new Identifier("videolib", "vlcj"), VLCVideoManager::new);
-        
     }
 
     /**
@@ -201,21 +178,9 @@ public final class VideoLib implements ClientModInitializer {
     public InstallStatus getInstallStatus() {
         return getVideoManager().hasNatives() ? InstallStatus.INSTALLED : InstallStatus.MISSING_NATIVES;
     }
-    
-    private void readConfig() {
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(CONFIG_FILE.toFile()));
-            config = VideoLibConfig.fromJson(reader);
-            reader.close();
-        } catch (IOException e) {
-            LOGGER.error("Unable to load VideoLib config!", e);
-        }
-        
-    }
-
     private void initVideoManager() {
         try {
-            Identifier implementation = getConfig().getImplementation();
+            Identifier implementation = VideoLibConfig.Implementation.VLC.id;
             VideoManagerFactory factory = VIDEO_MANAGERS.get(implementation);
             if (factory == null) {
                 throw new MissingNativesException("Unknown video implementation: "+implementation);

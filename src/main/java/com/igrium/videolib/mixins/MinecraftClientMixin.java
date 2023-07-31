@@ -9,10 +9,8 @@ import com.igrium.videolib.util.AfterInitCallback;
 
 import net.minecraft.client.MinecraftClient;
 
-
 @Mixin(MinecraftClient.class)
-public class MinecraftClientMixin {
-
+public abstract class MinecraftClientMixin {
     @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/SplashOverlay;init(Lnet/minecraft/client/MinecraftClient;)V"))
     void afterInit(CallbackInfo ci) {
         AfterInitCallback.EVENT.invoker().afterInit((MinecraftClient) (Object) this);

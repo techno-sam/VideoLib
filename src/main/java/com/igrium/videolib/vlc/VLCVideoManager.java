@@ -11,7 +11,6 @@ import com.igrium.videolib.api.VideoHandle;
 import com.igrium.videolib.api.VideoHandleFactory;
 import com.igrium.videolib.api.VideoManager;
 import com.igrium.videolib.util.FileVideoLoader;
-import com.igrium.videolib.util.MissingNativesException;
 
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
@@ -23,6 +22,7 @@ import uk.co.caprica.vlcj.factory.discovery.NativeDiscovery;
  * A media playback implementation that relies on VLCJ.
  */
 public class VLCVideoManager implements VideoManager {
+    public static boolean nativesFound;
     public static final Set<String> EXTENSIONS = ImmutableSet.of("mp4", "webm", "avi", "mov", "mpeg");
 
     public class VLCVideoHandleFactory implements VideoHandleFactory {
@@ -48,12 +48,19 @@ public class VLCVideoManager implements VideoManager {
     protected FileVideoLoader<VideoHandle> loader = new FileVideoLoader<>(
             EXTENSIONS::contains, VideoHandle.FileVideoHandle::new, videos::putAll);
 
-    public VLCVideoManager() throws MissingNativesException {
+    public VLCVideoManager() {
         try {
             factory = new MediaPlayerFactory(new NativeDiscovery());
-        } catch (NativeLibraryMappingException e) {
-            throw new MissingNativesException("Unable to load VLC natives!", e);
+            nativesFound = true;
+        } catch (NativeLibraryMappingException | UnsatisfiedLinkError e) {
+            System.out.println("Unable to load VLC natives: ");
+            e.printStackTrace();
+            nativesFound = false;
         }
+    }
+    @Override
+    public boolean hasNatives() {
+        return nativesFound;
     }
 
     @Nullable

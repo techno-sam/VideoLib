@@ -1,6 +1,7 @@
 package com.igrium.videolib.server.mixins;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -13,6 +14,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin implements VideoLibStatusHolder {
 
+    @Unique
     private InstallStatus installStatus = InstallStatus.NOT_INSTALLED;
 
     @Override

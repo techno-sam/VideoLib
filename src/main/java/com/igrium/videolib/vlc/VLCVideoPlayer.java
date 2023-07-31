@@ -39,7 +39,7 @@ public class VLCVideoPlayer implements VideoPlayer {
     }
 
     protected void init() {
-        if (mediaPlayer != null) return;
+        if (mediaPlayer != null || !manager.hasNatives()) return;
 
         mediaPlayer = manager.getFactory().mediaPlayers().newEmbeddedMediaPlayer();
         surface = new OpenGLVideoSurface();
