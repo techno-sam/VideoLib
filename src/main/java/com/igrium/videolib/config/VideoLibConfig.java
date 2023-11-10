@@ -4,11 +4,11 @@ import eu.midnightdust.lib.config.MidnightConfig;
 import net.minecraft.util.Identifier;
 
 public class VideoLibConfig extends MidnightConfig {
-    @Entry public static Implementation implementation = Implementation.VLC;
+    @Entry public static Implementation backend = Implementation.VLC;
     @Entry public static boolean showMissingNativesToast = true;
 
     public Identifier getImplementation() {
-        return implementation.id;
+        return backend.id;
     }
 
     public enum Implementation {

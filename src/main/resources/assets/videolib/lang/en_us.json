@@ -10,7 +10,7 @@
     "videolib.missing_natives.toast.title": "Native Libraries missing",
     "videolib.missing_natives.toast.description": "VLC needs to be installed for video support to work.\nSee github.com/Motschen/VideoLib/wiki",
     "videolib.midnightconfig.title": "VideoLib Config",
-    "videolib.midnightconfig.implementation": "Video Player Implementation",
+    "videolib.midnightconfig.backend": "Video Player Implementation",
     "videolib.midnightconfig.enum.Implementation.VLC": "VLC Media Player",
     "videolib.midnightconfig.showMissingNativesToast": "Show missing natives warning"
 }
