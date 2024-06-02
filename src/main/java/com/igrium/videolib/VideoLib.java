@@ -1,8 +1,11 @@
 package com.igrium.videolib;
 
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.SimpleRegistry;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Path;
+
+import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,15 +42,16 @@ import net.minecraft.util.Identifier;
  */
 @Environment(EnvType.CLIENT)
 public final class VideoLib implements ClientModInitializer {
-    public static final Registry<VideoManagerFactory> VIDEO_MANAGERS =createSimple(new Identifier("videolib", "managers")).buildAndRegister();
+    public static final Registry<VideoManagerFactory> VIDEO_MANAGERS = FabricRegistryBuilder
+            .createSimple(VideoManagerFactory.class, new Identifier("videolib", "managers"))
+            .buildAndRegister();
+
+    private static Path CONFIG_FILE = FabricLoader.getInstance().getConfigDir().resolve("videolib.json");
 
     private static VideoLib instance;
     private static final Logger LOGGER = LogManager.getLogger();
     private final MinecraftClient client = MinecraftClient.getInstance();
     public boolean missingNativesWarningShown = false;
-    public static FabricRegistryBuilder<VideoManagerFactory, SimpleRegistry<VideoManagerFactory>> createSimple(Identifier registryId) {
-        return FabricRegistryBuilder.createSimple(RegistryKey.ofRegistry(registryId));
-    }
     
     /**
      * Get the current VideoLib instance.

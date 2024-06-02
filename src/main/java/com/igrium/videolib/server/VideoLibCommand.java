@@ -107,15 +107,15 @@ public final class VideoLibCommand  {
         InstallStatus status = VideoLibServer.getInstallStatus(player);
         
         if (status == InstallStatus.NOT_INSTALLED) {
-            source.sendFeedback(() -> Text.translatable("commands.videolib.status.not_installed", player.getDisplayName())
+            source.sendFeedback(Text.translatable("commands.videolib.status.not_installed", player.getDisplayName())
                     .formatted(Formatting.RED), false);
             return 0;
         } else if (status == InstallStatus.MISSING_NATIVES) {
-            source.sendFeedback(() -> Text.translatable("commands.videolib.status.missing_natives", player.getDisplayName())
+            source.sendFeedback(Text.translatable("commands.videolib.status.missing_natives", player.getDisplayName())
                     .formatted(Formatting.YELLOW), false);
             return 1;
         } else if (status == InstallStatus.INSTALLED) {
-            source.sendFeedback(() -> Text.translatable("commands.videolib.status.installed", player.getDisplayName())
+            source.sendFeedback(Text.translatable("commands.videolib.status.installed", player.getDisplayName())
                     .formatted(Formatting.GREEN), false);
             return 2;
         } else {
@@ -160,7 +160,7 @@ public final class VideoLibCommand  {
                     Text.translatable("commands.videolib.send_command.fail", fail).formatted(Formatting.RED));
         }
 
-        source.sendFeedback(() -> response, true);
+        source.sendFeedback(response, true);
         return success;
     }
 }
