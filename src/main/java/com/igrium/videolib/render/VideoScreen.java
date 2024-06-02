@@ -12,10 +12,11 @@ import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.VertexFormat.DrawMode;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.Matrix4f;
 
@@ -158,16 +159,16 @@ public class VideoScreen extends Screen {
     }
 
     protected void drawQuad(Matrix4f matrix, SimpleQuad quad) {
-        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         BufferBuilder buffer = Tessellator.getInstance().getBuffer();
-        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
+        buffer.begin(DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
 
         buffer.vertex(matrix, quad.x0(), quad.y1(), 0).texture(quad.u0(), quad.v1()).next();
         buffer.vertex(matrix, quad.x1(), quad.y1(), 0).texture(quad.u1(), quad.v1()).next();
         buffer.vertex(matrix, quad.x1(), quad.y0(), 0).texture(quad.u1(), quad.v0()).next();
         buffer.vertex(matrix, quad.x0(), quad.y0(), 0).texture(quad.u0(), quad.v0()).next();
 
-        BufferRenderer.drawWithGlobalProgram(buffer.end());
+        BufferRenderer.drawWithShader(buffer.end());
     }
 
     /**

@@ -1,8 +1,5 @@
 package com.igrium.videolib;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.nio.file.Path;
 
 import net.minecraft.util.registry.Registry;
@@ -45,8 +42,6 @@ public final class VideoLib implements ClientModInitializer {
     public static final Registry<VideoManagerFactory> VIDEO_MANAGERS = FabricRegistryBuilder
             .createSimple(VideoManagerFactory.class, new Identifier("videolib", "managers"))
             .buildAndRegister();
-
-    private static Path CONFIG_FILE = FabricLoader.getInstance().getConfigDir().resolve("videolib.json");
 
     private static VideoLib instance;
     private static final Logger LOGGER = LogManager.getLogger();
